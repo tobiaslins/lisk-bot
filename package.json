@@ -1,0 +1,19 @@
+{
+  "name": "lisk-bot",
+  "version": "1.0.0",
+  "start": "build/main.js",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "backpack-core": "^0.4.3",
+    "mongodb": "^2.2.33",
+    "telegraf": "^3.15.3",
+    "telegraf-command-parts": "^1.0.3",
+    "telegraf-session-mongo": "^1.1.0"
+  },
+  "scripts": {
+    "dev": "backpack",
+    "build": "backpack build",
+    "start": "node build/main.js"
+  }
+}
