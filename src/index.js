@@ -3,7 +3,7 @@ import {MongoClient} from 'mongodb'
 import MongoSession from 'telegraf-session-mongo'
 import commandParts from 'telegraf-command-parts'
 import axios from 'axios'
-
+import {createServer} from 'http'
 
 import { watchTransactions, getLastBlock, getTransactionUrl } from './lisk'
 
@@ -41,7 +41,6 @@ const setupMiddlewares = () => {
 
 const sendNotification = async e => {
   const res = await db.collection('sessions').findOne({ "data.accounts": {$in: [e.senderId, e.recipientId]}})
-  console.log(res)
   if(res !== null) {
     console.log('Notification to ', e.senderId, e.recipientId)
     const amount = e.amount / Math.pow(10, 8)
@@ -60,7 +59,9 @@ const main = async () => {
   console.log('Starting up')
   db = await connectDB()
   console.log('Connected db')
-  const session = new MongoSession(db, {})
+  const session = new MongoSession(db, {
+    ttl: 3600 * 1000000
+  })
   await session.setup()
   app.use(session.middleware)
   setupMiddlewares(session)
@@ -70,3 +71,6 @@ const main = async () => {
 }
 
 main()
+
+const server = createServer(() => {})
+server.listen(3000)
