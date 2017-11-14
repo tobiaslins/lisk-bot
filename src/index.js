@@ -1,9 +1,9 @@
 import Telegraf from 'telegraf'
-import {MongoClient} from 'mongodb'
+import { MongoClient } from 'mongodb'
 import MongoSession from 'telegraf-session-mongo'
 import commandParts from 'telegraf-command-parts'
 import axios from 'axios'
-import {createServer} from 'http'
+import { createServer } from 'http'
 
 import { watchTransactions, getLastBlock, getTransactionUrl } from './lisk'
 
@@ -14,9 +14,9 @@ let db
 
 const setupMiddlewares = () => {
   app.use(commandParts())
-  app.command('/add', (ctx) => {
+  app.command('/add', ctx => {
     const address = ctx.state.command.splitArgs[0]
-    if(/\d{19}L/.test(address)) {
+    if (/\d{19}L/.test(address)) {
       const old = ctx.session.accounts || []
       ctx.session.name = 'dere'
       ctx.session.accounts = [...old, address]
@@ -30,27 +30,42 @@ const setupMiddlewares = () => {
     ctx.reply(ctx.session.accounts)
   })
   app.command('/pending', async ctx => {
-    if(ctx.session.accounts && ctx.session.accounts.length >= 1) {
+    if (ctx.session.accounts && ctx.session.accounts.length >= 1) {
       try {
-        const response = await axios.get(`https://lisk.now.sh/${ctx.session.accounts[0]}`)
+        const response = await axios.get(
+          `https://lisk.now.sh/${ctx.session.accounts[0]}`
+        )
         ctx.reply(response.data.total)
-      } catch(err){}
+      } catch (err) {}
     }
   })
 }
 
 const sendNotification = async e => {
-  const res = await db.collection('sessions').findOne({ "data.accounts": {$in: [e.senderId, e.recipientId]}})
-  if(res !== null) {
+  const res = await db
+    .collection('sessions')
+    .findOne({ 'data.accounts': { $in: [e.senderId, e.recipientId] } })
+  if (res !== null) {
     console.log('Notification to ', e.senderId, e.recipientId)
     const amount = e.amount / Math.pow(10, 8)
     const received = res.data.accounts.includes(e.recipientId)
-    if(received) {
+    if (received) {
       const name = e.knownSender !== null ? e.knownSender.owner : e.senderId
-      app.telegram.sendMessage(res.key, `You received *${amount}* LSK from ${name} (${getTransactionUrl(e.id)})`, {parse_mode: 'markdown'})
+      app.telegram.sendMessage(
+        res.key,
+        `You received *${amount}* LSK from ${name} (${getTransactionUrl(
+          e.id
+        )})`,
+        { parse_mode: 'markdown' }
+      )
     } else {
-      const name = e.knownRecipient !== null ? e.knownRecipient.owner : e.recipientId
-      app.telegram.sendMessage(res.key, `You have sent *${amount}* LSK to ${name} (${getTransactionUrl(e.id)})`, {parse_mode: 'markdown'})
+      const name =
+        e.knownRecipient !== null ? e.knownRecipient.owner : e.recipientId
+      app.telegram.sendMessage(
+        res.key,
+        `You have sent *${amount}* LSK to ${name} (${getTransactionUrl(e.id)})`,
+        { parse_mode: 'markdown' }
+      )
     }
   }
 }
@@ -72,5 +87,8 @@ const main = async () => {
 
 main()
 
-const server = createServer(() => {})
-server.listen(3000)
+const server = createServer((req, res) => {
+  res.write('ok')
+  res.end()
+})
+server.listen(process.env.PORT || 3000)

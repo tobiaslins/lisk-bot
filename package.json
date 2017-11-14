@@ -16,5 +16,6 @@
     "dev": "backpack",
     "build": "backpack build",
     "start": "node build/main.js"
-  }
+  },
+  "prettier":{}
 }

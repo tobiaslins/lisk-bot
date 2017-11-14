@@ -20,6 +20,7 @@ export const getTransactionUrl = id => `[${id}](${endpoint}/tx/${id})`
 export const watchTransactions = async (sendNotification) => {
   lastBlock = await getLastBlock()
   const watcher = setInterval(async () => {
+    if (!lastBlock) lastBlock = 0
     console.log('Getting new TX after block id ' + lastBlock)
     const tx = await getLastTransactions()
     const f = tx.filter(t => t.height > lastBlock)
