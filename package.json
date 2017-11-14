@@ -2,6 +2,7 @@
   "name": "lisk-bot",
   "version": "1.0.0",
   "start": "build/main.js",
+  "main": "build/main.js",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.17.1",
