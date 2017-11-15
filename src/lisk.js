@@ -2,12 +2,11 @@ import axios from 'axios'
 
 let lastBlock = 0
 
-const endpoint = 'https://explorer.lisk.io'
+const endpoint = 'https://testnet-explorer.lisk.io'
 
 export const getLastBlock = async () => {
   const tx = await getLastTransactions()
-   const {height} = tx[0]
-   return height
+  return tx[0] ? tx[0].height : 0
 }
 
 const getLastTransactions = async () => {
@@ -17,7 +16,7 @@ const getLastTransactions = async () => {
 
 export const getTransactionUrl = id => `[${id}](${endpoint}/tx/${id})`
 
-export const watchTransactions = async (sendNotification) => {
+export const watchTransactions = async sendNotification => {
   lastBlock = await getLastBlock()
   const watcher = setInterval(async () => {
     if (!lastBlock) lastBlock = 0
@@ -26,6 +25,6 @@ export const watchTransactions = async (sendNotification) => {
     const f = tx.filter(t => t.height > lastBlock)
     console.log(`Processing ${f.length} transactions`)
     f.forEach(sendNotification)
-    if(f[0]) lastBlock = f[0].height
+    if (f[0]) lastBlock = f[0].height
   }, 15000)
 }
