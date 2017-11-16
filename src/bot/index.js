@@ -29,12 +29,12 @@ const showHelp = ctx => {
 [/pending](/pending) (Get the pending payouts from pools)
 [/remove](/remove) _yourwallet_ (Remove a wallet)
 
-Feel free to donate 😇 2726132279622801448L
+Feel free to donate 😇 16786801026697706054L
 `)
 }
 
 const showDonate = ctx => {
-  ctx.reply('Feel free to donate 😇 *2726132279622801448L*')
+  ctx.replyWithMarkdown('Feel free to donate 😇 *16786801026697706054L*')
 }
 
 const main = async () => {
