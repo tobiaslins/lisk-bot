@@ -2,7 +2,7 @@ import axios from 'axios'
 
 let lastBlock = 0
 
-const endpoint = 'https://testnet-explorer.lisk.io'
+const endpoint = 'https://explorer.lisk.io'
 
 export const getLastBlock = async () => {
   const tx = await getLastTransactions()
@@ -17,7 +17,7 @@ const getLastTransactions = async () => {
 export const getTransactionUrl = id => `[${id}](${endpoint}/tx/${id})`
 
 export const watchTransactions = async newTransaction => {
-  lastBlock = 0 //await getLastBlock()
+  lastBlock = await getLastBlock()
   const watcher = setInterval(async () => {
     if (!lastBlock) lastBlock = 0
     console.log('Getting new TX after block id ' + lastBlock)
