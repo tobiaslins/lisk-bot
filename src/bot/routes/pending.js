@@ -24,7 +24,7 @@ const getPending = async ctx => {
     const wallets = accounts.map(a => [Markup.callbackButton(a, `pending${a}`)])
     ctx.reply(
       'Please choose a wallet',
-      Markup.inlineKeyboard([wallets]).extra()
+      Markup.inlineKeyboard([...wallets]).extra()
     )
   } else {
     ctx.reply('Please add an account first')
