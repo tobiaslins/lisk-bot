@@ -73,6 +73,7 @@ const main = async () => {
   bot.hears('List wallets', showWallets)
   bot.hears('Help', showHelp)
   bot.hears('Donate', showDonate)
+  bot.on('message', showHelp)
 
   bot.startPolling()
 
