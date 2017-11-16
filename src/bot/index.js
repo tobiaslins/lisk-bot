@@ -33,6 +33,10 @@ Feel free to donate 😇 2726132279622801448L
 `)
 }
 
+const showDonate = ctx => {
+  ctx.reply('Feel free to donate 😇 *2726132279622801448L*')
+}
+
 const main = async () => {
   const db = await connect()
   const mongoSession = new MongoSession(db, {
@@ -63,10 +67,12 @@ const main = async () => {
   bot.command('pending', enter('pending'))
   bot.command('list', showWallets)
   bot.command('help', showHelp)
+  bot.command('donate', showDonate)
 
   bot.hears('Get pending lisk', enter('pending'))
   bot.hears('List wallets', showWallets)
   bot.hears('Help', showHelp)
+  bot.hears('Donate', showDonate)
 
   bot.startPolling()
 

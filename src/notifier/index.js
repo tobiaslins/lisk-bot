@@ -26,7 +26,6 @@ const startWatching = () =>
         const amount = e.amount / Math.pow(10, 8)
         const received = res.data.accounts.includes(e.recipientId)
         if (received) {
-          console.log('received')
           const name = e.knownSender !== null ? e.knownSender.owner : e.senderId
           transactions.add({
             chat: res.key,
@@ -36,7 +35,6 @@ const startWatching = () =>
           })
         }
         if (!received) {
-          console.log('sent')
           const name =
             e.knownRecipient !== null ? e.knownRecipient.owner : e.recipientId
           transactions.add({
@@ -46,7 +44,6 @@ const startWatching = () =>
             } (${getTransactionUrl(e.id)})`
           })
         }
-        console.log('over')
       }
     } catch (err) {
       console.error(err)

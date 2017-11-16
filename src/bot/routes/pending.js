@@ -33,7 +33,6 @@ const getPending = async ctx => {
 }
 
 const processPending = (ctx, wallet) => {
-  console.log(ctx)
   ctx.editMessageText(`Please wait ${loading[0]}`)
   let start = 1
   let loader = setInterval(() => {

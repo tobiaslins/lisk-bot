@@ -46,6 +46,7 @@ export const showWallets = async ctx => {
         }
       } catch (err) {}
     }
+    result += `Current lisk price: ${usd}$`
     ctx.replyWithMarkdown(result)
   } else {
     ctx.replyWithMarkdown(
