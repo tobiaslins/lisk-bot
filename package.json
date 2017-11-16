@@ -10,7 +10,6 @@
     "postinstall": "yarn build"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
     "babel-plugin-dynamic-import-node": "^1.2.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
@@ -19,6 +18,7 @@
   "dependencies": {
     "axios": "^0.17.1",
     "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
     "bull": "^3.3.6",
     "dotenv": "^4.0.0",
     "mongodb": "^2.2.33",
