@@ -1,2 +1,2 @@
-bot: node bot/index.js
-watchdog: node notifier/index.js
+bot: node build/bot/index.js
+watchdog: node build/notifier/index.js
