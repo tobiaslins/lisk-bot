@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "babel": "^6.23.0",
     "bull": "^3.3.6",
     "dotenv": "^4.0.0",
     "mongodb": "^2.2.33",
