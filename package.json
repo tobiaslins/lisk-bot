@@ -1,22 +1,28 @@
 {
-  "name": "lisk-bot",
+  "name": "liskbot",
   "version": "1.0.0",
-  "start": "build/main.js",
-  "main": "build/main.js",
+  "main": "build/index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "yarn build && node build/index.js",
+    "start-watchdog": "yarn build && node build/notifier/index.js",
+    "build": "babel src --out-dir build",
+    "postinstall": "yarn build"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  },
   "dependencies": {
     "axios": "^0.17.1",
-    "backpack-core": "^0.4.3",
+    "bull": "^3.3.6",
+    "dotenv": "^4.0.0",
     "mongodb": "^2.2.33",
     "telegraf": "^3.15.3",
     "telegraf-command-parts": "^1.0.3",
     "telegraf-session-mongo": "^1.1.0"
-  },
-  "scripts": {
-    "dev": "backpack",
-    "build": "backpack build",
-    "postinstall": "yarn build",
-    "start": "node build/main.js"
-  },
-  "prettier":{}
+  }
 }

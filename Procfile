@@ -1,1 +1,2 @@
-worker: node build/main.js
+bot: node bot/index.js
+watchdog: node notifier/index.js
