@@ -15,6 +15,7 @@
   "scripts": {
     "dev": "backpack",
     "build": "backpack build",
+    "postinstall": "yarn build",
     "start": "node build/main.js"
   },
   "prettier":{}
