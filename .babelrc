@@ -9,9 +9,5 @@
       }
     ]
   ],
-  "plugins": [
-    "transform-object-rest-spread",
-    "transform-class-properties",
-    "dynamic-import-node"
-  ]
+  "plugins": ["transform-class-properties", "dynamic-import-node"]
 }
