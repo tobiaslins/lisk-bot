@@ -15,35 +15,62 @@ const main = async () => {
   startWatching()
 }
 
+const findUser = wallets =>
+  db.collection('sessions').findOne({ 'data.accounts': { $in: wallets } })
+
+const handleTransaction = async t => {
+  console.log('Handle Transaction')
+  const user = await findUser([t.senderId, t.recipientId])
+  if (user) {
+    const amount = e.amount / Math.pow(10, 8)
+    const received = user.data.accounts.includes(e.recipientId)
+    if (received) {
+      const name = e.knownSender !== null ? e.knownSender.owner : e.senderId
+      transactions.add({
+        chat: res.key,
+        message: `You received *${amount}* LSK from ${
+          name
+        } (${getTransactionUrl(e.id)})`
+      })
+    }
+    if (!received) {
+      const name =
+        e.knownRecipient !== null ? e.knownRecipient.owner : e.recipientId
+      transactions.add({
+        chat: res.key,
+        message: `You have sent *${amount}* LSK to ${name} (${getTransactionUrl(
+          e.id
+        )})`
+      })
+    }
+  }
+}
+
+const handleVote = async ({ id }) => {
+  console.log('Handle Vote')
+  const transaction = await getTransaction(id)
+  const user = await findUser([t.senderId, t.recipientId])
+  console.log(transaction.votes)
+  if (user) {
+  }
+}
+
 const startWatching = () =>
   watchTransactions(async e => {
     try {
-      const res = await db
-        .collection('sessions')
-        .findOne({ 'data.accounts': { $in: [e.senderId, e.recipientId] } })
       if (res) {
+        switch (e.type) {
+          case 0:
+            handleTransaction(e)
+            break
+          case 3:
+            handleVote(e)
+            break
+          default:
+            console.log('Ignoring transaction type')
+            break
+        }
         console.log('User found to send notification')
-        const amount = e.amount / Math.pow(10, 8)
-        const received = res.data.accounts.includes(e.recipientId)
-        if (received) {
-          const name = e.knownSender !== null ? e.knownSender.owner : e.senderId
-          transactions.add({
-            chat: res.key,
-            message: `You received *${amount}* LSK from ${
-              name
-            } (${getTransactionUrl(e.id)})`
-          })
-        }
-        if (!received) {
-          const name =
-            e.knownRecipient !== null ? e.knownRecipient.owner : e.recipientId
-          transactions.add({
-            chat: res.key,
-            message: `You have sent *${amount}* LSK to ${
-              name
-            } (${getTransactionUrl(e.id)})`
-          })
-        }
       }
     } catch (err) {
       console.error(err)

@@ -11,6 +11,11 @@ export const getLastBlock = async () => {
 
 const getLastTransactions = async () => {
   const res = await axios.get(`${endpoint}/api/getLastTransactions`)
+  return res.data.success ? res.data.transaction || false
+}
+
+export const getTransaction = async id => {
+  const res = await axios.get(`${endpoint}/tx/${id}`)
   return res.data.transactions || []
 }
 
