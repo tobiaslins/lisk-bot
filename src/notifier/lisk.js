@@ -2,7 +2,7 @@ import axios from 'axios'
 
 let lastBlock = 0
 
-const endpoint = 'https://testnet-explorer.lisk.io'
+const endpoint = process.env.LISK_ENDPOINT || 'https://explorer.lisk.io'
 
 export const getLastBlock = async () => {
   const tx = await getLastTransactions()
