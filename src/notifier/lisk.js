@@ -2,21 +2,22 @@ import axios from 'axios'
 
 let lastBlock = 0
 
-const endpoint = 'https://explorer.lisk.io'
+const endpoint = 'https://testnet-explorer.lisk.io'
 
 export const getLastBlock = async () => {
   const tx = await getLastTransactions()
-  return tx[0] ? tx[0].height : 0
+  return tx ? tx[0].height : 0
 }
 
 const getLastTransactions = async () => {
   const res = await axios.get(`${endpoint}/api/getLastTransactions`)
-  return res.data.success ? res.data.transaction || false
+  return res.data.success ? res.data.transactions : false
 }
 
 export const getTransaction = async id => {
-  const res = await axios.get(`${endpoint}/tx/${id}`)
-  return res.data.transactions || []
+  const url = `${endpoint}/api/getTransaction?transactionId=${id}`
+  const res = await axios.get(url)
+  return res.data.transaction || []
 }
 
 export const getTransactionUrl = id => `[${id}](${endpoint}/tx/${id})`

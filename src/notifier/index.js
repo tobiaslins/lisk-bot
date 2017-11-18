@@ -1,7 +1,7 @@
 import Queue from 'bull'
 import { MongoClient } from 'mongodb'
 import dotenv from 'dotenv'
-import { watchTransactions, getTransactionUrl } from './lisk'
+import { getTransaction, watchTransactions, getTransactionUrl } from './lisk'
 
 dotenv.config()
 
@@ -9,6 +9,7 @@ const transactions = new Queue('transactions', process.env.REDIS_URL)
 
 let db
 const main = async () => {
+  console.log('lola ist cool')
   console.log('connecting to db')
   db = await MongoClient.connect(process.env.MONGO_URL)
   console.log('connected')
@@ -47,33 +48,27 @@ const handleTransaction = async t => {
 }
 
 const handleVote = async ({ id }) => {
-  console.log('Handle Vote')
+  console.log('Handle Vote : ' + id)
   const transaction = await getTransaction(id)
-  const user = await findUser([t.senderId, t.recipientId])
-  console.log(transaction.votes)
+  const user = await findUser([transaction.senderId, transaction.recipientId])
+  console.log(transaction)
   if (user) {
   }
 }
 
 const startWatching = () =>
   watchTransactions(async e => {
-    try {
-      if (res) {
-        switch (e.type) {
-          case 0:
-            handleTransaction(e)
-            break
-          case 3:
-            handleVote(e)
-            break
-          default:
-            console.log('Ignoring transaction type')
-            break
-        }
-        console.log('User found to send notification')
-      }
-    } catch (err) {
-      console.error(err)
+    switch (e.type) {
+      case 0:
+        handleTransaction(e)
+        break
+      case 3:
+        handleVote(e)
+        break
+      default:
+        console.log('Ignoring transaction type')
+        break
     }
+    console.log('User found to send notification')
   })
 main()
