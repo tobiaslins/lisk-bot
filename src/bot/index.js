@@ -13,6 +13,8 @@ import Queue from 'bull'
 const { enter, leave } = Stage
 
 import pendingScene from './routes/pending'
+import setupSettings from './routes/settings'
+
 import { showWallets, addWallet, removeWallet } from './routes/wallet'
 import { connect } from './db'
 
@@ -28,6 +30,7 @@ const showHelp = ctx => {
 [/list](/list) (List all wallets and their lisk amount)
 [/pending](/pending) (Get the pending payouts from pools)
 [/remove](/remove) _yourwallet_ (Remove a wallet)
+[/settings](/settings) Settings for the bot (currency)
 
 Feel free to donate 😇 16786801026697706054L
 `)
@@ -56,7 +59,7 @@ const main = async () => {
       'Welcome, how can I help you today?',
       Markup.keyboard([
         ['Get pending lisk', 'List wallets'],
-        ['Donate', 'Help']
+        ['Donate', 'Help', '⚙️']
       ])
         .resize()
         .extra()
@@ -73,6 +76,9 @@ const main = async () => {
   bot.hears('List wallets', showWallets)
   bot.hears('Help', showHelp)
   bot.hears('Donate', showDonate)
+
+  setupSettings(bot)
+
   bot.on('message', showHelp)
 
   bot.startPolling()

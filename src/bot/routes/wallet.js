@@ -17,7 +17,6 @@ export const removeWallet = ctx => {
   const address = ctx.state.command.splitArgs[0]
   if (/\d{19}L/.test(address)) {
     const old = ctx.user.accounts || []
-    ctx.user.name = ctx.from.username
     ctx.user.accounts = old.filter(a => a !== address)
     ctx.reply('Removed successfully')
   } else {
@@ -31,7 +30,10 @@ export const showWallets = async ctx => {
     const liskTicker = await axios.get(
       'https://api.coinmarketcap.com/v1/ticker/lisk/?convert=EUR'
     )
-    const usd = liskTicker.data[0].price_usd
+    const currency = ctx.user.currency || 'USD'
+    const priceData = liskTicker.data[0]
+    const price =
+      currency === 'USD' ? priceData['price_usd'] : priceData['price_eur']
     let result = ''
     for (let account of ctx.user.accounts) {
       try {
@@ -41,12 +43,12 @@ export const showWallets = async ctx => {
         if (res.data.success) {
           const lsk = res.data.balance / Math.pow(10, 8)
           result += `*${account}*\n - ${lsk} _LSK_\n - ${Math.round(
-            lsk * usd
-          )} $\n`
+            lsk * price
+          )} ${currency}\n`
         }
       } catch (err) {}
     }
-    result += `Current lisk price: ${usd}$`
+    result += `Current lisk price: ${Number(price).toFixed(2)} ${currency}`
     ctx.replyWithMarkdown(result)
   } else {
     ctx.replyWithMarkdown(
