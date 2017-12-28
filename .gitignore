@@ -4,3 +4,5 @@ build
 .env
 
 app.yaml
+
+deploy.json
