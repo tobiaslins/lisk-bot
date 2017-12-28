@@ -25,7 +25,7 @@
   },
   "apps": [
     {
-      "name": "bot-watchdog",
+      "name": "bot",
       "script": "./build/bot/index.js",
       "instances": 1,
       "env_production": {
@@ -33,7 +33,7 @@
       }
     },
     {
-      "name": "bot",
+      "name": "bot-watchdog",
       "script": "./build/notifier/index.js",
       "env_production": {
         "NODE_ENV": "production"
