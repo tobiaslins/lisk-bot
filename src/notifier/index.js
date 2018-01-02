@@ -6,10 +6,10 @@ import { getTransaction, watchTransactions, getTransactionUrl } from './lisk'
 dotenv.config()
 
 const transactions = new Queue('transactions', process.env.REDIS_URL)
+const notifications = new Queue('notifications', process.env.REDIS_URL)
 
 let db
 const main = async () => {
-  console.log('lola ist cool')
   console.log('connecting to db')
   db = await MongoClient.connect(process.env.MONGO_URL)
   console.log('connected')
@@ -19,31 +19,57 @@ const main = async () => {
 const findUser = wallets =>
   db.collection('sessions').findOne({ 'data.accounts': { $in: wallets } })
 
+const sendNotification = ({
+  user,
+  amount,
+  transaction,
+  received,
+  senderName,
+  recipientName
+}) => {
+  if (user.settings && user.settings.notifyMail) {
+    notifications.add({
+      type: 'mail',
+      mail: user.mail
+    })
+  }
+}
+
 const handleTransaction = async t => {
-  console.log('Handle Transaction')
   const user = await findUser([t.senderId, t.recipientId])
   if (user) {
-    const amount = e.amount / Math.pow(10, 8)
-    const received = user.data.accounts.includes(e.recipientId)
-    if (received) {
-      const name = e.knownSender !== null ? e.knownSender.owner : e.senderId
-      transactions.add({
-        chat: res.key,
-        message: `You received *${amount}* LSK from ${
-          name
-        } (${getTransactionUrl(e.id)})`
-      })
-    }
-    if (!received) {
-      const name =
-        e.knownRecipient !== null ? e.knownRecipient.owner : e.recipientId
-      transactions.add({
-        chat: res.key,
-        message: `You have sent *${amount}* LSK to ${name} (${getTransactionUrl(
-          e.id
-        )})`
-      })
-    }
+    const transaction = await getTransaction(t.id)
+    const received = user.data.accounts.includes(t.recipientId)
+
+    sendNotification({
+      user,
+      amount: t.amount / Math.pow(10, 8),
+      transaction,
+      received,
+      senderName: t.knownSender !== null ? t.knownSender.owner : t.senderId,
+      recipientName:
+        t.knownRecipient !== null ? t.knownRecipient.owner : t.recipientId
+    })
+
+    // if (received) {
+    //   const name = e.knownSender !== null ? e.knownSender.owner : e.senderId
+    //   transactions.add({
+    //     chat: res.key,
+    //     message: `You received *${amount}* LSK from ${
+    //       name
+    //     } (${getTransactionUrl(e.id)})`
+    //   })
+    // }
+    // if (!received) {
+    //   const name =
+    //     e.knownRecipient !== null ? e.knownRecipient.owner : e.recipientId
+    //   transactions.add({
+    //     chat: res.key,
+    //     message: `You have sent *${amount}* LSK to ${name} (${getTransactionUrl(
+    //       e.id
+    //     )})`
+    //   })
+    // }
   }
 }
 
@@ -53,6 +79,12 @@ const handleVote = async ({ id }) => {
   const user = await findUser([transaction.senderId, transaction.recipientId])
   console.log(transaction)
   if (user) {
+    transactions.add({
+      chat: res.key,
+      message: `You have sent *${amount}* LSK to ${name} (${getTransactionUrl(
+        e.id
+      )})`
+    })
   }
 }
 
@@ -69,6 +101,5 @@ const startWatching = () =>
         console.log('Ignoring transaction type')
         break
     }
-    console.log('User found to send notification')
   })
 main()

@@ -29,8 +29,8 @@ export const watchTransactions = async newTransaction => {
     console.log('Getting new TX after block id ' + lastBlock)
     const tx = await getLastTransactions()
     const f = tx.filter(t => t.height > lastBlock)
-    console.log(`Processing ${f.length} transactions`)
+    if (f.length !== 0) console.log(`Processing ${f.length} transactions`)
     f.forEach(newTransaction)
     if (f[0]) lastBlock = f[0].height
-  }, 10000)
+  }, 5000)
 }
