@@ -9,7 +9,7 @@ const { enter, leave } = Stage
 
 const getPendingLisk = async wallet => {
   console.log('Sending request')
-  const response = await axios.get(`https://pending.lisk.ws/${wallet}`)
+  const response = await axios.get(`https://pending-api.lisk.ws/${wallet}`)
   console.log('Got response')
   return response.data.total
 }
